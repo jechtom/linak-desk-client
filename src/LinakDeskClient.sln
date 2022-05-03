@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32328.378
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinakDeskClient", "LinakDeskClient\LinakDeskClient.csproj", "{6C30A4E8-AF08-48BC-9C32-F7672879CA50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinakDeskClient.Cli", "LinakDeskClient.Cli\LinakDeskClient.Cli.csproj", "{B020BBF0-626E-40BB-83CE-00A36F06EE79}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6C30A4E8-AF08-48BC-9C32-F7672879CA50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C30A4E8-AF08-48BC-9C32-F7672879CA50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C30A4E8-AF08-48BC-9C32-F7672879CA50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C30A4E8-AF08-48BC-9C32-F7672879CA50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B020BBF0-626E-40BB-83CE-00A36F06EE79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B020BBF0-626E-40BB-83CE-00A36F06EE79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B020BBF0-626E-40BB-83CE-00A36F06EE79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B020BBF0-626E-40BB-83CE-00A36F06EE79}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {53FF740A-D115-45E6-AE23-EB13C503FC69}
+	EndGlobalSection
+EndGlobal

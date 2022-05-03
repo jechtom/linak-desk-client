@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="InTheHand.BluetoothLE" Version="4.0.23" />
+    <PackageReference Include="InTheHand.Net.Bluetooth" Version="4.0.29" />
+  </ItemGroup>
+
+</Project>
