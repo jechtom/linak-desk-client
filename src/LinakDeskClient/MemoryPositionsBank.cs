@@ -17,7 +17,7 @@ namespace LinakDeskClient
             positions = new MemoryPosition[capacity];
             for (int i = 0; i < capacity; i++)
             {
-                positions[i] = new MemoryPosition(isSet: false, height: default);
+                positions[i] = MemoryPosition.UnSet();
             }
         }
 

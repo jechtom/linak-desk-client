@@ -1,14 +1,16 @@
-﻿using System;
+﻿using LinakDeskClient.Structures;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LinakDeskClient.DpgCommands
+namespace LinakDeskClient
 {
-    public class CommandDispatcher
+    public class DpgCommandDispatcher
     {
-        public CommandDispatcher(ServicesAccessor accessor)
+        public DpgCommandDispatcher(ServicesAccessor accessor)
         {
             Accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
         }
@@ -65,39 +67,46 @@ namespace LinakDeskClient.DpgCommands
 
         public ServicesAccessor Accessor { get; }
 
-        private byte[] BuildCommandRequestRead(CommandTypes command) => new byte[] { 0x7F, (byte)command, 0x0 }; // read is: [0x7f, CMD, 0x0]
-        private byte[] BuildCommandRequestWrite(CommandTypes command, byte[] data) => CombineTwoArrays(new byte[] { 0x7F, (byte)command, 0x80 }, data); // write is: [0x7f, CMD, 0x80, ... data]
+        private byte[] BuildCommandRequestRead(DpgCommandTypes command) => 
+            new byte[] { 0x7F, (byte)command, 0x0 }; // read is: [0x7f, CMD, 0x0]
+        private byte[] BuildCommandRequestWrite(DpgCommandTypes command, byte[] data) => 
+            ArrayHelper.CombineTwoArrays(new byte[] { 0x7F, (byte)command, 0x80 }, data); // write is: [0x7f, CMD, 0x80, ... data]
 
         public async Task<DeskCapabilities> InvokeGetCapabilitiesAsync()
         {
-            byte[] data = await InvokeCommandAsync(BuildCommandRequestRead(CommandTypes.GET_CAPABILITIES));
-            var result = new DeskCapabilities(data);
+            byte[] response = await InvokeCommandAsync(BuildCommandRequestRead(DpgCommandTypes.GET_CAPABILITIES));
+            var result = new DeskCapabilities(response);
             return result;
         }
 
         public async Task<DeskHeight> InvokeGetDeskOffsetAsync()
         {
-            byte[] data = await InvokeCommandAsync(BuildCommandRequestRead(CommandTypes.DESK_OFFSET));
-            var result = DeskHeight.Parse(data, 0);
+            byte[] response = await InvokeCommandAsync(BuildCommandRequestRead(DpgCommandTypes.DESK_OFFSET));
+            var result = DeskHeight.Parse(response, 0);
             return result;
         }
 
         public async Task<MemoryPosition> InvokeGetMemoryPositionsAsync(int number)
         {
-            if (number <= 0 || number > MemoryPositionsBank.MaximumPositions) throw new ArgumentOutOfRangeException("Invalid memory position number. Position on one-based.");
-            byte[] command = BuildCommandRequestRead(CommandTypes.GET_SET_MEMORY_POSITION_1 + (number - 1));
-            byte[] data = await InvokeCommandAsync(command);
+            ValidateMemoryPositionNumber(number);
+            byte[] command = BuildCommandRequestRead(DpgCommandTypes.GET_SET_MEMORY_POSITION_1 + (number - 1));
+            byte[] response = await InvokeCommandAsync(command);
 
-            var result = MemoryPosition.Parse(data);
+            var result = MemoryPosition.Parse(response);
             return result;
         }
 
-        private static T[] CombineTwoArrays<T>(T[] a1, T[] a2)
+        public async Task InvokeSetMemoryPositionsAsync(int number, MemoryPosition memoryPosition)
         {
-            T[] arrayCombined = new T[a1.Length + a2.Length];
-            Array.Copy(a1, 0, arrayCombined, 0, a1.Length);
-            Array.Copy(a2, 0, arrayCombined, a1.Length, a2.Length);
-            return arrayCombined;
+            ValidateMemoryPositionNumber(number);
+            byte[] requestData = memoryPosition.Serialize();
+            byte[] command = BuildCommandRequestWrite(DpgCommandTypes.GET_SET_MEMORY_POSITION_1 + (number - 1), requestData);
+            byte[] response = await InvokeCommandAsync(command);
+        }
+
+        private void ValidateMemoryPositionNumber(int number)
+        {
+            if (number <= 0 || number > MemoryPositionsBank.MaximumPositions) throw new ArgumentOutOfRangeException("Invalid memory position number. Position is one-based.");
         }
     }
 }

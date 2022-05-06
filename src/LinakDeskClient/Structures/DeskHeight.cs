@@ -23,6 +23,6 @@ namespace LinakDeskClient
                 (byte)(Value >> 8 & 0xFF)
             };
 
-        internal static DeskHeight FromCm(double cm) => new DeskHeight((int)(cm * 100));
+        public static DeskHeight FromCm(double cm) => new DeskHeight((int)(cm * 100));
     }
 }

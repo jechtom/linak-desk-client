@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LinakDeskClient.DpgCommands
+namespace LinakDeskClient.Structures
 {
     [Flags]
     public enum DeskCapabilitiesEnum

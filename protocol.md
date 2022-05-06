@@ -78,7 +78,7 @@ DPG commands are commands sent to main control unit. Requests are sent to `DPG` 
 
 You should wait for response before sending another command.
 
-Request format of simple commands (without content):
+Request format of read commands (without content):
 
 ```
 00     0x7F // fixed header
@@ -110,7 +110,36 @@ Response format (with content):
 02..n  data
 ```
 
-Commands found (not all implemented/tested) [are here](./src/LinakDeskClient/DpgCommands/CommandTypes.cs).
+Commands found (not all implemented/tested) [are here](./src/LinakDeskClient/Structures/DpgCommandTypes.cs).
+
+## Get/Set Memory Position
+
+Positions have 1-based indexing. Setting/getting memory positions is done via DPG Commands:
+
+```
+GET_SET_MEMORY_POSITION_1 = 137,
+GET_SET_MEMORY_POSITION_2 = 138,
+GET_SET_MEMORY_POSITION_3 = 139,
+GET_SET_MEMORY_POSITION_4 = 140, // not supported on IKEA IDASEN
+```
+
+Number of positions is available via [DeskCapabilities](./src/LinakDeskClient/Structures/DeskCapabilities.cs) structure.
+
+To read memory position use read DPG command (without content). Device will return memory position message.
+
+To store memory position use write DPG command (with content) with serialized memory position message. Device will return confirmation message without content.
+
+Memory position message:
+
+```
+For unset position:
+[0x00][0xFFFFFFFF] (5B)
+
+For set position:
+[0x01][2B height][0x00000000] (7B)
+```
+
+Remark: Not sure of purpose of 4B suffix but it needs to be all set for unsetting and all zeroes for setting.
 
 ## Moving the Desk
 

@@ -1,4 +1,4 @@
-﻿using LinakDeskClient.DpgCommands;
+﻿using LinakDeskClient.Structures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +18,6 @@ namespace LinakDeskClient
         public DeskHeight HeightOffset { get; set; }
         public int ErrorsCount { get; set; }
 
-        public override string ToString() => $"Desk \"{DeviceName}\" (Id={DeviceId}, DeskType={DeskType})\nCapabilities: {DeskCapabilities}\nMemory: [{Memory}]\nOffset: {HeightOffset}\nPosition: {HeightAndSpeed}";
+        public override string ToString() => $"Desk \"{DeviceName}\" (Id={DeviceId}, DeskType={DeskType})\nCapabilities: {DeskCapabilities}\nMemory: {Memory}\nOffset: {HeightOffset}\nPosition: {HeightAndSpeed}";
     }
 }

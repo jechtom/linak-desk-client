@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LinakDeskClient.DpgCommands
+namespace LinakDeskClient.Structures
 {
-    public enum CommandTypes
+    public enum DpgCommandTypes
     {
         PRODUCT_INFO = 8,
         GET_SETUP = 10,

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.CommandLine;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace LinakDeskClient.Cli
@@ -10,7 +11,7 @@ namespace LinakDeskClient.Cli
     {
         static async Task Main(string[] args)
         {
-            var rootCommand = new RootCommand();
+            var rootCommand = new RootCommand("LINAK DESK CLI");
 
             var listCommand = new Command("list", "List paired bluetooth devices.");
             listCommand.SetHandler(async () =>
@@ -24,7 +25,7 @@ namespace LinakDeskClient.Cli
             });
             rootCommand.AddCommand(listCommand);
 
-            var scanCommand = new Command("scan", "Scan bluetooth devices.");
+            var scanCommand = new Command("scan", "Scan for bluetooth devices.");
             scanCommand.SetHandler(async () =>
             {
                 Console.WriteLine("Scanning...");
@@ -41,7 +42,7 @@ namespace LinakDeskClient.Cli
             infoCommand.AddArgument(new Argument<string>("device", "Id of device to connect to. Case insensitive."));
             infoCommand.SetHandler(async (string device) =>
             {
-                LinakDesk linakServer = await ConnectToDeskByDeviceIdAsync(device);
+                LinakDesk desk = await ConnectToDeskByDeviceIdAsync(device);
 
                 Console.WriteLine("Done.");
             }, infoCommand.Arguments.ToArray());
@@ -49,17 +50,38 @@ namespace LinakDeskClient.Cli
 
             var moveCommand = new Command("move", "Move desk to given memory position.");
             moveCommand.AddArgument(new Argument<string>("device", "Id of device to connect to. Case insensitive."));
-            moveCommand.AddArgument(new Argument<int>("memory", "Memory position. One-based indexed."));
-            moveCommand.SetHandler(async (string device, int memoryPosition) =>
+            moveCommand.AddArgument(new Argument<string>("position", "Memory position preset (m1, m2, m3, m3) or height in cm (with 'cm' suffix - example: '40cm')."));
+            moveCommand.SetHandler(async (string device, string position) =>
             {
-                LinakDesk linakServer = await ConnectToDeskByDeviceIdAsync(device);
+                LinakDesk desk = await ConnectToDeskByDeviceIdAsync(device);
 
-                Console.WriteLine($"Moving to memory position {memoryPosition}.");
-                await linakServer.Mover.MoveToMemoryPositionAsync(memoryPosition);
+                DeskHeight height = HeightParser.ParseHeightExpression(desk, position);
+
+                Console.WriteLine($"Moving to memory position {height}.");
+                await desk.Mover.MoveToPositionAsync(height);
 
                 Console.WriteLine("Done.");
             }, moveCommand.Arguments.ToArray());
             rootCommand.AddCommand(moveCommand);
+
+            var setCommand = new Command("set", "Set/unset memory position or positions.");
+            setCommand.AddArgument(new Argument<string>("device", "Id of device to connect to. Case insensitive."));
+            setCommand.AddArgument(new Argument<string>("expression", "Set expression. One or more (';' delimited) expressions in format 'key=value' where 'key' is number (1-4 memory positions) and 'value' is desk height (in CM) or 'reset' (to unset position) or 'current' (to capture current table height). Examples: 1=current or 1=15;2=70 or 1=reset;2=reset;3=reset."));
+            setCommand.SetHandler(async (string device, string expression) =>
+            {
+                LinakDesk desk = await ConnectToDeskByDeviceIdAsync(device);
+
+                IEnumerable<(int position, MemoryPosition value)> positionsToSet = MemorySetExpressionParser.ParseMemoryExpression(desk, expression);
+
+                foreach (var positionToSet in positionsToSet)
+                {
+                    Console.WriteLine($"Setting memory position {positionToSet.position} to {positionToSet.value}.");
+                    await desk.DpgCommandDispatcher.InvokeSetMemoryPositionsAsync(positionToSet.position, positionToSet.value);
+                }
+
+                Console.WriteLine("Done.");
+            }, setCommand.Arguments.ToArray());
+            rootCommand.AddCommand(setCommand);
 
             await rootCommand.InvokeAsync(args);
         }

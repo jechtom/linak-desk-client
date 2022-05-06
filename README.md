@@ -29,11 +29,26 @@ LinakDeskCli.exe list
 # connect and show info about Linak desk (where FFFFFFFFFFFF is ID of the desk)
 LinakDeskCli.exe info FFFFFFFFFFFF
 
-# move desk to first height position
-LinakDeskCli.exe move FFFFFFFFFFFF 1
+# move desk to the first height preset position
+LinakDeskCli.exe move FFFFFFFFFFFF m1
+
+# move desk to 40cm height position
+LinakDeskCli.exe move FFFFFFFFFFFF 40cm
+
+# set first height present to current desk position
+LinakDeskCli.exe set FFFFFFFFFFFF 1=current
+
+# set first height preset to 10cm, second to 70cm and reset third position
+LinakDeskCli.exe set FFFFFFFFFFFF 1=10;2=70;3=reset
 ```
 
-Remark: Use app to do initialy pairing and to setup memory positions. Currently this is not supported by CLI.
+Remark: Use app to do initialy pairing if needed.
+
+## Missing Features
+
+* Pairing process.
+* User identification and desk offsets.
+* Setting name of the desk. 
 
 ## Setting Powershell Alias
 
@@ -44,8 +59,8 @@ You can create command aliases like `desk-up` or `desk-down` to perform move com
 notepad $PROFILE
 
 # Add any custom functions you need. For example:
-Function desk-down() { & 'E:\programs\linak-desk\LinakDeskCli' move FFFFFFFFFFFF 1 }
-Function desk-up() { & 'E:\programs\linak-desk\LinakDeskCli' move FFFFFFFFFFFF 2 }
+Function desk-down() { & 'E:\programs\linak-desk\LinakDeskCli' move FFFFFFFFFFFF m1 }
+Function desk-up() { & 'E:\programs\linak-desk\LinakDeskCli' move FFFFFFFFFFFF m2 }
 ```
 
 See it in action:
@@ -62,7 +77,7 @@ Connecting...
 Height and speed: Height: 14,08cm; Speed: 0
 Desk "Desk 1234" (Id=<<REDACTED>>, DeskType=Desk)
 Capabilities: MemorySize=3;Flags=[BluetoothAllowed]
-Memory: [[1]=>{IsSet: True; Height: 14,06cm}, [2]=>{IsSet: True; Height: 48,58cm}, [3]=>{IsSet: True; Height: 51,40cm}]
+Memory: [1]=>14,06cm, [2]=>48,58cm, [3]=>51,40cm
 Offset: 271,37cm
 Position: Height: 14,08cm; Speed: 0
 Connected.
@@ -77,7 +92,7 @@ Found. Connecting...
 Height and speed: Height: 46,90cm; Speed: 0
 Desk "Desk 1234" (Id=<<REDACTED>>, DeskType=Desk)
 Capabilities: MemorySize=3;Flags=[BluetoothAllowed]
-Memory: [[1]=>{IsSet: True; Height: 14,06cm}, [2]=>{IsSet: True; Height: 48,58cm}, [3]=>{IsSet: True; Height: 51,40cm}]
+Memory: [1]=>14,06cm, [2]=>48,58cm, [3]=>51,40cm
 Offset: 271,37cm
 Position: Height: 46,90cm; Speed: 0
 Connected.

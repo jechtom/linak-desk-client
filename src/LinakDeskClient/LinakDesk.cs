@@ -18,7 +18,7 @@ namespace LinakDeskClient
         public RemoteGattServer GattServer => BluetoothDevice.Gatt;
         public DeskState State { get; private set; }
         public ServicesAccessor Services { get; private set; }
-        public DpgCommands.CommandDispatcher DpgCommandDispatcher { get; private set; }
+        public DpgCommandDispatcher DpgCommandDispatcher { get; private set; }
         public Mover Mover { get; private set; }
 
         public async Task InitAsync()
@@ -34,7 +34,7 @@ namespace LinakDeskClient
             var services = new ServicesAccessor();
             await services.InitAsync(GattServer);
             Services = services;
-            DpgCommandDispatcher = new DpgCommands.CommandDispatcher(services);
+            DpgCommandDispatcher = new DpgCommandDispatcher(services);
             Mover = new Mover(this);
 
             // subscribe to DPG data callback
